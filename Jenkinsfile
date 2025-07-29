@@ -63,19 +63,20 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]
                 ]) {
-                    sh '''
-                        echo "✅ Using uploaded kubeconfig"
-                        chmod 600 ${KUBECONFIG}
+                    sh """
+                        echo '✅ Using uploaded kubeconfig'
+                        chmod 600 "$KUBECONFIG"
+                        export KUBECONFIG="$KUBECONFIG"
 
-                        echo "📦 Deploying to Kubernetes"
+                        echo '📦 Deploying to Kubernetes'
                         kubectl version --client
                         kubectl apply -f gitops/namespace.yaml
                         kubectl apply -f gitops/deployment.yaml
                         kubectl apply -f gitops/service.yaml
 
-                        echo "🌐 Fetching External IP of LoadBalancer"
+                        echo '🌐 Fetching External IP of LoadBalancer'
                         kubectl get svc -n movieflix
-                    '''
+                    """
                 }
             }
         }
